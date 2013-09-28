@@ -13,9 +13,11 @@ Bundle 'superbrothers/vim-quickrun-markdown-gfm'
 ```
 
 ```vim
-let g:quickrun_config['markdown'] = {
-\   'type': 'markdown/gfm',
-\   'outputter': 'browser'
+let g:quickrun_config = {
+\   'markdown': {
+\     'type': 'markdown/gfm',
+\     'outputter': 'browser'
+\   }
 \ }
 ```
 
