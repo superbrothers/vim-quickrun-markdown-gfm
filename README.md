@@ -39,6 +39,7 @@ For more information, see the help of vim-quickrun
 
 ## Requirements
 
+- [curl and libcurl](http://curl.haxx.se/)
 - [Markdown Rendering | GitHub API](http://developer.github.com/v3/markdown/)
 - [thinca/vim-quickrun](https://github.com/thinca/vim-quickrun)
 - [tyru/open-browser.vim](https://github.com/tyru/open-browser.vim)
