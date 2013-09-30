@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
 body=`cat /dev/stdin`
 
 cwd=`dirname "${0}"`
