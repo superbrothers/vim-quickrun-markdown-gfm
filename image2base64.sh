@@ -16,4 +16,4 @@ for image in `echo "$images" | tr ' ' '\n' | sort | uniq`; do
     base64=`cat "$image" | base64 | tr -d '\n'`
     html=`echo "$html" | sed -e 's#src="'$image'"#src="data:image/'$ext';base64,'$base64'"#g'`
 done
-echo $html
+echo "$html"
