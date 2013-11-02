@@ -21,7 +21,7 @@ function! s:hook.on_output(session, context)
     let a:context.data = '<!doctype html>'
     \ . '<html lang="ja">'
     \ . '  <head>'
-    \ . '    <meta charset="UTF-8">'
+    \ . '    <meta charset="UTF-8"/>'
     \ . s:stylesheet . s:javascript
     \ . '  </head>'
     \ . '  <body>' . a:context.data . '</body>'
