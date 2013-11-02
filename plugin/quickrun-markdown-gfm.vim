@@ -14,13 +14,6 @@ if exists('g:quickrun_markdown_gfm_github_token')
 endif
 
 let g:quickrun_config['markdown/gfm'] = {
-\   'exec': "call g:quickrun_markdown_gfm_render()",
-\   'runner': 'vimscript'
+\   'exec': 'call quickrun_markdown_gfm#render()'
+\ , 'runner': 'vimscript'
 \ }
-
-function! g:quickrun_markdown_gfm_render()
-    let l:param = join(getline(0, '$'), "\n")
-    let l:header = {'Content-Type': 'text/plain'}
-    let l:res = webapi#http#post(g:quickrun_markdown_gfm_github_api_url, l:param, l:header)
-    echo l:res.content
-endfunction
