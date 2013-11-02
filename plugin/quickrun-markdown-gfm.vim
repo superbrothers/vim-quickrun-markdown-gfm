@@ -14,16 +14,13 @@ if exists('g:quickrun_markdown_gfm_github_token')
 endif
 
 let g:quickrun_config['markdown/gfm'] = {
-\   'exec': "call g:quickrun_markdown_gfm_render('" . expand('<sfile>:p:h') . "')",
+\   'exec': "call g:quickrun_markdown_gfm_render()",
 \   'runner': 'vimscript'
 \ }
 
-function! g:quickrun_markdown_gfm_render(cwd)
+function! g:quickrun_markdown_gfm_render()
     let l:param = join(getline(0, '$'), "\n")
     let l:header = {'Content-Type': 'text/plain'}
     let l:res = webapi#http#post(g:quickrun_markdown_gfm_github_api_url, l:param, l:header)
-    let l:css1 = join(readfile(a:cwd . '/../static/github.css'))
-    let l:css2 = join(readfile(a:cwd . '/../static/highlight.css'))
-    let l:js1 = join(readfile(a:cwd . '/../static/highlight.js'))
-    echo '<!doctype html><html lang="ja"><head><meta charset="UTF-8"><style>' . l:css1 . '</style><style>' . l:css2 . '</style><script>' . l:js1 . '</script></head><body>' . l:res.content . '</body></html>'
+    echo l:res.content
 endfunction
