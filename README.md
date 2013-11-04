@@ -29,6 +29,12 @@ If you want to use this script on GitHub Enterprise:
 let g:quickrun_markdown_gfm_github_api_url = 'https://<your-github-enterprise-hostname>/api/v3'
 ```
 
+If you want to use a GitHub OAuth token:
+
+```vim
+let g:quickrun_markdown_gfm_github_token = '<your-github-oauth-token>'
+```
+
 ## Usage
 
     :QuickRun markdown
