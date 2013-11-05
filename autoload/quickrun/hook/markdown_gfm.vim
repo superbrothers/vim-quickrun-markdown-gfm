@@ -4,6 +4,30 @@ let s:js_files = ['highlight']
 let s:stylesheet = ''
 let s:javascript = ''
 
+function! s:pack_resources_recur(html)
+    if type(a:html) == type('')
+        return a:html
+    endif
+    let l:attr_list = []
+    for [attr_key, attr_val] in items(get(a:html, 'attr', {}))
+        call add(l:attr_list, attr_key . '=' . '"' . substitute(attr_val, '"', '&quot;', 'g') . '"')
+    endfor
+    let l:attr = join(l:attr_list, ' ')
+    let l:child = ''
+    for child_val in get(a:html, 'child', [])
+        let l:child .= s:pack_resources_recur(child_val)
+        unlet child_val
+    endfor
+    return '<'
+    \ . a:html.name
+    \ . (l:attr == '' ? '' : ' ' . l:attr)
+    \ . (l:child == '' ? '/>' : '>' . l:child . '</' . a:html.name . '>')
+endfunction
+
+function! s:pack_resources(data)
+    return join(map(get(webapi#html#parse('<div>' . a:data . '</div>'), 'child', []), 's:pack_resources_recur(v:val)'), '')
+endfunction
+
 let s:hook = {
 \   'name': 'markdown_gfm'
 \ , 'kind': 'hook'
@@ -11,10 +35,8 @@ let s:hook = {
 \ }
 
 function! s:hook.on_ready(session, context)
-    let l:css = map(s:css_files, '"<style>" . join(readfile(s:static_dir . v:val . ".css"), "\n") . "</style>"')
-    let s:stylesheet = join(l:css, "\n")
-    let l:js = map(s:js_files, '"<script>" . join(readfile(s:static_dir . v:val . ".js"), "\n") . "</script>"')
-    let s:javascript = join(l:js, "\n")
+    let s:stylesheet = join(map(copy(s:css_files), '"<style>" . join(readfile(s:static_dir . v:val . ".css"), "\n") . "</style>"'), "\n")
+    let s:javascript = join(map(copy(s:js_files), '"<script>" . join(readfile(s:static_dir . v:val . ".js"), "\n") . "</script>"'), "\n")
 endfunction
 
 function! s:hook.on_output(session, context)
@@ -24,7 +46,7 @@ function! s:hook.on_output(session, context)
     \ . '    <meta charset="UTF-8"/>'
     \ . s:stylesheet . s:javascript
     \ . '  </head>'
-    \ . '  <body>' . a:context.data . '</body>'
+    \ . '  <body>' . s:pack_resources(a:context.data) . '</body>'
     \ . '</html>'
 endfunction
 
