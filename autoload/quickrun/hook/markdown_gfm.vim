@@ -12,36 +12,36 @@ let s:base64table = [
 \ "w","x","y","z","0","1","2","3","4","5","6","7","8","9","+","/"]
 
 function! s:base64encode(bytes)
-    let l:b64 = []
+    let b64 = []
     for i in range(0, len(a:bytes) - 1, 3)
-        let l:n = a:bytes[i] * 0x10000
+        let n = a:bytes[i] * 0x10000
         \ + get(a:bytes, i + 1, 0) * 0x100
         \ + get(a:bytes, i + 2, 0)
-        call add(l:b64, s:base64table[l:n / 0x40000])
-        call add(l:b64, s:base64table[l:n / 0x1000 % 0x40])
-        call add(l:b64, s:base64table[l:n / 0x40 % 0x40])
-        call add(l:b64, s:base64table[l:n % 0x40])
+        call add(b64, s:base64table[n / 0x40000])
+        call add(b64, s:base64table[n / 0x1000 % 0x40])
+        call add(b64, s:base64table[n / 0x40 % 0x40])
+        call add(b64, s:base64table[n % 0x40])
     endfor
     if len(a:bytes) % 3 == 1
-        let l:b64[-1] = '='
-        let l:b64[-2] = '='
+        let b64[-1] = '='
+        let b64[-2] = '='
     elseif len(a:bytes) % 3 == 2
-        let l:b64[-1] = '='
+        let b64[-1] = '='
     endif
-    return join(l:b64, '')
+    return join(b64, '')
 endfunction
 
 function! s:readbytes(file)
-    let l:bytes = []
+    let bytes = []
     for line in readfile(a:file, 'b')
-        if !empty(l:bytes)
-            call add(l:bytes, 10)
+        if !empty(bytes)
+            call add(bytes, 10)
         endif
-        call extend(l:bytes
+        call extend(bytes
         \ , map(range(len(line))
         \   , 'char2nr(line[v:val]) == 10 ? 0 : char2nr(line[v:val])'))
     endfor
-    return l:bytes
+    return bytes
 endfunction
 " }}}
 
@@ -58,29 +58,29 @@ endfunction
 
 function! s:pack_local_resource(html)
     if a:html.name == 'img' && s:has_local_resource(a:html, 'src')
-        let l:filename = expand('%:p:h') . '/' . a:html.attr.src
-        if getftype(l:filename) == 'file'
+        let filename = expand('%:p:h') . '/' . a:html.attr.src
+        if getftype(filename) == 'file'
             let a:html.attr.src = 'data:image/'
-            \ . fnamemodify(l:filename, ':e')
+            \ . fnamemodify(filename, ':e')
             \ . ';base64,'
-            \ . s:base64encode(s:readbytes(l:filename))
+            \ . s:base64encode(s:readbytes(filename))
         endif
     elseif a:html.name == 'script' && s:has_local_resource(a:html, 'src')
-        let l:filename = expand('%:p:h') . '/' . a:html.attr.src
-        if getftype(l:filename) == 'file'
+        let filename = expand('%:p:h') . '/' . a:html.attr.src
+        if getftype(filename) == 'file'
             unlet a:html.attr.src
-            let a:html.child = [join(readfile(l:filename), "\n")]
+            let a:html.child = [join(readfile(filename), "\n")]
         endif
     elseif a:html.name == 'link'
     \ && s:has_local_resource(a:html, 'href')
     \ && get(a:html.attr, 'rel', '') == 'stylesheet'
-        let l:filename = expand('%:p:h') . '/' . a:html.attr.href
-        if getftype(l:filename) == 'file'
+        let filename = expand('%:p:h') . '/' . a:html.attr.href
+        if getftype(filename) == 'file'
             unlet a:html.attr.href
             return s:pack_resources({
             \   'name': 'style',
             \   'attr': a:html.attr,
-            \   'child': [join(readfile(l:filename), "\n")]
+            \   'child': [join(readfile(filename), "\n")]
             \ })
         endif
     endif
@@ -91,25 +91,25 @@ function! s:pack_resources_recur(html)
     if type(a:html) == type('')
         return a:html
     endif
-    let l:packed_html = s:pack_local_resource(a:html)
-    if type(l:packed_html) == type('')
-        return l:packed_html
+    let packed_html = s:pack_local_resource(a:html)
+    if type(packed_html) == type('')
+        return packed_html
     endif
-    let l:attr_list = []
-    for [attr_key, attr_val] in items(get(l:packed_html, 'attr', {}))
-        call add(l:attr_list
+    let attr_list = []
+    for [attr_key, attr_val] in items(get(packed_html, 'attr', {}))
+        call add(attr_list
         \ , attr_key . '=' . '"' . substitute(attr_val, '"', '&quot;', 'g') . '"')
     endfor
-    let l:attr = join(l:attr_list, ' ')
-    let l:child = ''
-    for child_val in get(l:packed_html, 'child', [])
-        let l:child .= s:pack_resources_recur(child_val)
+    let attr = join(attr_list, ' ')
+    let child = ''
+    for child_val in get(packed_html, 'child', [])
+        let child .= s:pack_resources_recur(child_val)
         unlet child_val
     endfor
     return '<'
-    \ . l:packed_html.name
-    \ . (l:attr == '' ? '' : ' ' . l:attr)
-    \ . (l:child == '' ? '/>' : '>' . l:child . '</' . l:packed_html.name . '>')
+    \ . packed_html.name
+    \ . (attr == '' ? '' : ' ' . attr)
+    \ . (child == '' ? '/>' : '>' . child . '</' . packed_html.name . '>')
 endfunction
 
 function! s:pack_resources(data)
