@@ -1,3 +1,6 @@
+let s:cpo_save = &cpo
+set cpo&vim
+
 let s:static_dir = expand('<sfile>:p:h:h:h:h') . '/static/'
 let s:css_files = ['github', 'highlight']
 let s:js_files = ['highlight']
@@ -157,3 +160,6 @@ endfunction
 function! quickrun#hook#markdown_gfm#new()
     return deepcopy(s:hook)
 endfunction
+
+let &cpo = s:cpo_save
+unlet s:cpo_save
