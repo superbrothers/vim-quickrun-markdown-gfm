@@ -8,6 +8,7 @@ Add the following lines to your `.vimrc`:
 
 ```vim
 Bundle 'thinca/vim-quickrun'
+Bundle 'matten/webapi-vim'
 Bundle 'tyru/open-browser.vim'
 Bundle 'superbrothers/vim-quickrun-markdown-gfm'
 ```
@@ -48,6 +49,7 @@ For more information, see the help of vim-quickrun
 - [curl and libcurl](http://curl.haxx.se/)
 - [Markdown Rendering | GitHub API](http://developer.github.com/v3/markdown/)
 - [thinca/vim-quickrun](https://github.com/thinca/vim-quickrun)
+- [mattn/webapi-vim](https://github.com/mattn/webapi-vim)
 - [tyru/open-browser.vim](https://github.com/tyru/open-browser.vim)
 - [revolunet/sublimetext-markdown-preview](https://github.com/revolunet/sublimetext-markdown-preview)  
     `github.css`, `highlight.css`, `highlight.js`
