@@ -9,4 +9,5 @@ endif
 let g:quickrun_config['markdown/gfm'] = {
 \   'exec': 'call quickrun_markdown_gfm#render()'
 \ , 'runner': 'vimscript'
+\ , 'hook/markdown_gfm/enable': 1
 \ }

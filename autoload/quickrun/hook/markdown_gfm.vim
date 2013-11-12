@@ -122,7 +122,7 @@ endfunction
 let s:hook = {
 \   'name': 'markdown_gfm'
 \ , 'kind': 'hook'
-\ , 'config': {'enable': 1}
+\ , 'config': {'enable': 0}
 \ }
 
 function! s:hook.on_ready(session, context)
