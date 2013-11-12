@@ -1,5 +1,5 @@
 if !exists('g:quickrun_markdown_gfm_github_api_url')
-    let g:quickrun_markdown_gfm_github_api_url = 'https://api.github.com/markdown/raw'
+    let g:quickrun_markdown_gfm_github_api_url = 'https://api.github.com'
 endif
 
 if !exists('g:quickrun_config')
