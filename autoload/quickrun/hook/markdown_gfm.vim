@@ -87,9 +87,16 @@ function! s:pack_local_resource(html)
     return a:html
 endfunction
 
+function! s:encode_html(html)
+    let tmp = substitute(a:html, '&', '\&amp;', 'g')
+    let tmp = substitute(tmp, '<', '\&lt;', 'g')
+    let tmp = substitute(tmp, '>', '\&gt;', 'g')
+    return substitute(tmp, '"', '\&quot;', 'g')
+endfunction
+
 function! s:pack_resources_recur(html)
     if type(a:html) == type('')
-        return a:html
+        return s:encode_html(a:html)
     endif
     let packed_html = s:pack_local_resource(a:html)
     if type(packed_html) == type('')
@@ -98,7 +105,7 @@ function! s:pack_resources_recur(html)
     let attr_list = []
     for [attr_key, attr_val] in items(get(packed_html, 'attr', {}))
         call add(attr_list
-        \ , attr_key . '=' . '"' . substitute(attr_val, '"', '&quot;', 'g') . '"')
+        \ , attr_key . '=' . '"' . s:encode_html(attr_val) . '"')
     endfor
     let attr = join(attr_list, ' ')
     let child = ''
