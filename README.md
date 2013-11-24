@@ -8,7 +8,7 @@ Add the following lines to your `.vimrc`:
 
 ```vim
 Bundle 'thinca/vim-quickrun'
-Bundle 'matten/webapi-vim'
+Bundle 'mattn/webapi-vim'
 Bundle 'tyru/open-browser.vim'
 Bundle 'superbrothers/vim-quickrun-markdown-gfm'
 ```
