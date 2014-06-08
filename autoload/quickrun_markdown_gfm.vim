@@ -6,10 +6,15 @@ function! quickrun_markdown_gfm#render()
     if exists('g:quickrun_markdown_gfm_github_token')
         let header['Authorization'] = 'token ' . g:quickrun_markdown_gfm_github_token
     endif
-    echo webapi#http#post(
+    let res = webapi#http#post(
     \ g:quickrun_markdown_gfm_github_api_url . '/markdown/raw'
     \ , join(getline(0, '$'), "\n")
-    \ , header).content
+    \ , header)
+    if res.status =~ '^2'
+        echo res.content
+    else
+        echo '<p style="color:red;">[' . res.status . '] Post failed: ' . res.message . '<p>'
+    endif
 endfunction
 
 let &cpo = s:cpo_save
